@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.1] — 2026-05-07
+
+### Changed
+
+- Bumped version to 0.1.1 for npm publish
+- Added `files` field to package.json for clean npm packages
+- Added `pi-package` keyword for pi.dev/packages discoverability
+- Added gallery image reference (`pi.image`) in package.json
+
+### Added
+
+- Inspiration section in README crediting ATLAS_OS
+- Installation methods: local, git, npm
+- MIT LICENSE file
+
 ## [0.1.0] — Initial release
 
 ### Added

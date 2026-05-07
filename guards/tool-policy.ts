@@ -231,9 +231,10 @@ export function describeHandoffGate(deity: DeityDefinition): string {
   if (deity.handoffs.length > 0) {
     const targets = [...new Set(deity.handoffs.map((h) => h.to))].join(" or ");
     lines.push(
-      `All checked? → pantheon_handoff(to: "${targets}", reason: "<why>", context: "<what they need>")`,
+      `All checked? Write \`.pantheon/handoff.json\` with to: \"${targets}\"`,
     );
   }
+  lines.push("If unsure or task is complete, omit `to` — it defaults to Janus.");
 
   return lines.join("\n");
 }

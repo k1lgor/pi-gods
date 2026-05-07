@@ -21,7 +21,7 @@ import type { HandoffEntry } from "../types.js";
 /** The JSON shape the LLM writes to `.pantheon/handoff.json` */
 export interface HandoffFile {
   from: string;
-  to: string;
+  to?: string;
   reason: string;
   context: string;
 }
@@ -32,13 +32,12 @@ export function parseHandoffFile(raw: unknown): HandoffFile | null {
   const obj = raw as Record<string, unknown>;
   if (
     typeof obj.from === "string" &&
-    typeof obj.to === "string" &&
     typeof obj.reason === "string" &&
     typeof obj.context === "string"
   ) {
     return {
       from: obj.from.toLowerCase().trim(),
-      to: obj.to.toLowerCase().trim(),
+      to: obj.to ? String(obj.to).toLowerCase().trim() : "janus",
       reason: obj.reason.trim(),
       context: obj.context.trim(),
     };
@@ -123,7 +122,9 @@ When your work for this phase is complete and you have verified ALL items in the
 
 2. The system will detect this file automatically and switch to ${target} on the next turn.
 
-3. **IMPORTANT:** If you need user input or have a clarifying question, do NOT create this file. Just ask the user directly. The pipeline pauses until they respond — then you continue and handoff when ready.
+3. **If you omit \`to\`, it defaults to Janus (Orchestrator).** This is useful when your task is complete and you want the pipeline to reset for the next request.
 
-4. The \`.pantheon/\` directory is created automatically — just write the file.`;
+4. **IMPORTANT:** If you need user input or have a clarifying question, do NOT create this file. Just ask the user directly. The pipeline pauses until they respond — then you continue and handoff when ready.
+
+5. The \`.pantheon/\` directory is created automatically — just write the file.`;
 }

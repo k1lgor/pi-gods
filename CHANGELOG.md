@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.0] — 2026-05-07
+
+### Added
+
+- **Auto-handoff fallback** — deities can omit `to` in handoff.json; defaults to Janus (#14)
+- **greet.sh demo script** — `demo-project/greet.sh` prints `hello <text>`, proven full 13-deity pipeline
+- **Full pipeline test drive** — first end-to-end Janus→Minerva→Prometheus→...→Janus cycle with 0 defects
+
+### Changed
+
+- `parseHandoffFile` — `to` field is now optional, defaults to `"janus"`
+- `handoffInstructions` — documents the auto-fallback behavior
+- `describeHandoffGate` — last line: "If unsure or task is complete, omit `to` — it defaults to Janus"
+
 ## [0.1.2] — 2026-05-07
 
 ### Fixed

@@ -13,6 +13,7 @@
   },
   "homepage": "https://github.com/k1lgor/pi-gods#readme",
   "keywords": [
+    "pi-package",
     "pi",
     "pi-extension",
     "sdd",
@@ -27,6 +28,7 @@
   "pi": {
     "extensions": [
       "./index.ts"
-    ]
+    ],
+    "image": "https://raw.githubusercontent.com/k1lgor/pi-gods/main/assets/gods.png"
   }
 }

@@ -1,0 +1,32 @@
+{
+  "name": "pi-gods",
+  "version": "0.1.0",
+  "description": "Pantheon SDD Agent System — fully autonomous multi-agent pipeline with tool boundary enforcement, file-based handoff, and 13 Roman/Greek deities",
+  "license": "MIT",
+  "author": "Plamen Ivanov",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/k1lgor/pi-gods.git"
+  },
+  "bugs": {
+    "url": "https://github.com/k1lgor/pi-gods/issues"
+  },
+  "homepage": "https://github.com/k1lgor/pi-gods#readme",
+  "keywords": [
+    "pi",
+    "pi-extension",
+    "sdd",
+    "pipeline",
+    "agents",
+    "autonomous",
+    "pantheon",
+    "deities",
+    "sdd-pipeline"
+  ],
+  "type": "module",
+  "pi": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

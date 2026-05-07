@@ -1,0 +1,6 @@
+{
+  "from": "janus",
+  "to": "vulcan",
+  "reason": "User wants a hello-world CLI tool built in demo-project/",
+  "context": "Demo project at ~/Coding/pi-gods/demo-project/. Build a Node.js CLI: hello.js prints 'Hello, <name>!' from process.argv[2], falls back to 'Hello, World!'. Single file, no dependencies. Include hello.test.js with Vitest."
+}

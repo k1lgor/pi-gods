@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.2] — 2026-05-07
+
+### Fixed
+
+- npm README not displaying on npmjs.com — republished (registry has readme, CDN needs refresh)
+
 ## [0.1.1] — 2026-05-07
 
 ### Changed

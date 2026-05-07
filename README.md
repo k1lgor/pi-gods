@@ -250,6 +250,15 @@ extraction, no file-per-agent. A single source of truth in `pantheon/definitions
    inferred from their capabilities and handoff rules. Explicit
    `handoffGate` arrays override the defaults when needed.
 
+## Inspiration
+
+pi-gods was inspired by [ATLAS_OS](https://github.com/lucapohl-angel/ATLAS_OS)
+— an SDD CLI that uses Greek deities for its spec-driven development
+pipeline. The concept of routing work through named specialists with defined
+boundaries and handoff triggers comes from ATLAS_OS's architecture.
+pi-gods adapts this to pi extensions with file-based handoff, enforced tool
+policies, and an autonomous auto-handoff engine.
+
 ## Installation
 
 ### Via git (recommended)

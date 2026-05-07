@@ -24,11 +24,23 @@
     "deities",
     "sdd-pipeline"
   ],
+  "files": [
+    "index.ts",
+    "types.ts",
+    "state.ts",
+    "system-prompt.ts",
+    "pantheon/",
+    "guards/",
+    "pipeline/",
+    "assets/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "TODO.md"
+  ],
   "type": "module",
   "pi": {
-    "extensions": [
-      "./index.ts"
-    ],
+    "extensions": ["./index.ts"],
     "image": "https://raw.githubusercontent.com/k1lgor/pi-gods/main/assets/gods.png"
   }
 }

@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.2] — 2026-05-08
+
+### Added
+
+- `assets/cover.png` — cover image for README header
+- `assets/logo.png` — project logo
+
+### Fixed
+
+- Missing PNG assets not tracked in git — now included in package tarball
+
 ## [0.2.1] — 2026-05-08
 
 ### Changed

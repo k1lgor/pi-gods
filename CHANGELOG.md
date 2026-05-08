@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1] — 2026-05-08
+
+### Changed
+
+- **README Pantheon section redesigned** — compact table format with mythological domain + pipeline purpose per deity
+- Removed duplicate access-level summary table for cleaner scanning
+
 ## [0.2.0] — 2026-05-07
 
 ### Added

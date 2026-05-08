@@ -1,6 +1,6 @@
 # pi-gods — Pantheon SDD Agent System
 
-<img src="assets/gods.png" alt="The Pantheon" width="100%" />
+<img src="assets/cover.png" alt="The Pantheon" width="100%" />
 
 A pi extension implementing a fully autonomous multi-agent SDD pipeline.
 Thirteen Roman/Greek deities, each owning their domain. Tool boundaries
@@ -9,74 +9,35 @@ Zero manual routing for the happy path.
 
 ## The Pantheon
 
-### ☉ Read‑Only Deities
+Thirteen Roman/Greek deities, each commanding their domain. Tool boundaries enforce separation. Handoffs happen at the filesystem — no custom machinery needed.
 
-**Janus — Orchestrator**
-God of doorways, transitions, beginnings and endings. Two-faced — looks simultaneously at where the project has been and where it must go. Janus is the entry gate. Every session starts here. He reads the project state (files present, story statuses, open handoffs) and routes to the correct specialist. He never writes code or authors specs — he opens doors.
+### 🔍 Read-Only
 
----
+| Deity     | Role         | Purpose                                                                                                                                               |
+| --------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Janus** | Orchestrator | God of doorways, transitions, beginnings and endings. The two-faced gate — reads project state and routes to the right specialist. Never writes code. |
 
-### ✎ Read/Write Deities
+### ✏️ Read/Write
 
-**Minerva — Product Manager**
-Goddess of wisdom, strategic warfare, and crafts. Born fully armed from Jupiter's head — she enters every situation prepared. Minerva turns vague requests into crisp PRDs. She asks focused questions until she can write every section without guessing, then hands off to the Architect. She never proposes architecture or tech stack — that is Prometheus's domain.
+| Deity          | Role            | Purpose                                                                                                                                                                                     |
+| -------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Minerva**    | Product Manager | Goddess of wisdom, strategic warfare, and crafts. Born fully armed from Jupiter's head — turns vague requests into crisp PRDs. Asks until every section writes itself.                      |
+| **Prometheus** | Architect       | Titan of forethought — his name means "one who thinks ahead." Shaped humanity and gave them fire. Translates PRDs into the simplest viable blueprint, naming every component and trade-off. |
+| **Morpheus**   | UX Designer     | God of dreams, shaper of human experience. Constructs entire worlds — designs flows (trigger → steps → success → failure), not screens.                                                     |
+| **Plutus**     | Product Owner   | God of wealth — not money, but VALUE. Blinded by Zeus to distribute riches without bias. Orders backlog by first-shippable-value. Cuts scope transparently.                                 |
+| **Vesta**      | Scrum Master    | Goddess of the hearth and sacred flame — the fire at the center of Rome. Keeps process integrity and team health. Flags blockers before stories reach Vulcan.                               |
+| **Calliope**   | Story Author    | Muse of epic poetry, eldest of the nine — "beautiful-voiced." Writes hyper-detailed stories carrying goal, ACs, architecture excerpts, and out-of-scope guardrails.                         |
 
-**Prometheus — Architect**
-Titan of forethought. His name means "one who thinks ahead." He shaped humanity from clay and gave them fire — the primordial technology. Prometheus translates the PRD into the simplest viable architecture. He names every component, every contract, every trade-off. He never writes implementation code — he designs the blueprint.
+### ⚡ Full Access
 
-**Morpheus — UX Designer**
-God of dreams, shaper of human experience. Morpheus appears to mortals in their sleep, constructing entire worlds. UX is dream-shaping: designing what users perceive, feel, and navigate. He designs flows (trigger → steps → success → failure states), not just screens. He authors DESIGN.md with tokens and never writes CSS or components.
-
-**Plutus — Product Owner**
-God of wealth — not money, but VALUE. Blinded by Zeus so he could distribute riches without bias. Plutus orders the backlog by first-shippable-value, not by what's easiest. Every epic earns its place with a one-sentence value statement. He cuts scope transparently — deferred items are documented, never silently dropped.
-
-**Vesta — Scrum Master**
-Goddess of the hearth and sacred flame — the fire at the center of Rome that was never allowed to die. Vesta is the stable center. Her job is process integrity and team health: identifying blockers, flagging oversized stories, ensuring acceptance criteria are testable before Vulcan pulls them. She never writes stories herself.
-
-**Calliope — Story Author**
-Muse of epic poetry, eldest of the nine Muses. Her name means "beautiful-voiced." She inspired Homer. Calliope writes hyper-detailed story files that carry everything Vulcan needs — goal, acceptance criteria, verbatim architecture excerpts, affected files, out-of-scope guardrails. The developer never needs to leave the story file.
-
----
-
-### ⚒ Full-Access Deities
-
-**Vulcan — Developer**
-God of fire, metalworking, and the forge. Cast from Olympus as a child for being lame, he built his own kingdom under Mount Etna and forged Jupiter's thunderbolts. Vulcan picks the next pending story and executes it end-to-end: tests first, implement, verify, handoff. He never leaves the forge broken — revert to green or mark blocked.
-
-**Nemesis — QA**
-Goddess of retribution against hubris. She measured the fortune of mortals and dealt punishment to those who dared claim they were finished when they were not. Nemesis takes the assertion that a story is "done" and tries to falsify it. Every defect gets a regression test. She distinguishes must-fix from nice-to-have on every line.
-
-**Aquarius — Data Engineer**
-The water-bearer, Ganymede, carried to Olympus to serve as cup-bearer. Data is water — it must flow, be pure, be channeled, never stagnate. Aquarius owns everything below the application layer: schemas, migrations, indexing, queries, ETL pipelines. Every migration ships with a tested rollback. PII is treated as toxic waste.
-
-**Mars Ultor — Security Architect**
-Mars the Avenger — the aspect of Mars that DEFENDS Rome, not the chaotic Ares who revels in bloodshed. Mars Ultor fortifies. He produces STRIDE threat models, scans dependencies for CVEs, audits secrets, traces auth flows, and reviews data handling. Every finding cites a CVE, OWASP category, or STRIDE element. Never ships with unmitigated Critical or High risks.
-
-**Mercury — Release Engineer**
-Messenger of the gods, god of commerce and boundaries. Fastest of the gods, winged sandals. Mercury delivers — commits, changelog entries, release notes, semantic version tags. Every release is a transaction with the user. One concern per commit. Conventional Commits. Changelog speaks to users; commit log speaks to developers.
-
-**Apollo — Documentation Engineer**
-God of knowledge, truth, and clarity. Apollo's oracle spoke in riddles, but Apollo himself demands precision. Every code example must run. Every API doc must match real symbols. Every README sentence carries information. Apollo illuminates — he never fabricates, never markets, never documents APIs that don't exist.
-
----
-
-| Deity      | Role                   | Access       |
-| ---------- | ---------------------- | ------------ |
-| Janus      | Orchestrator           | ☉ read‑only  |
-| Minerva    | Product Manager        | ✎ read/write |
-| Prometheus | Architect              | ✎ read/write |
-| Morpheus   | UX Designer            | ✎ read/write |
-| Plutus     | Product Owner          | ✎ read/write |
-| Vesta      | Scrum Master           | ✎ read/write |
-| Calliope   | Story Author           | ✎ read/write |
-| Vulcan     | Developer              | ⚒ full       |
-| Nemesis    | QA                     | ⚒ full       |
-| Aquarius   | Data Engineer          | ⚒ full       |
-| Mars Ultor | Security Architect     | ⚒ full       |
-| Mercury    | Release Engineer       | ⚒ full       |
-| Apollo     | Documentation Engineer | ⚒ full       |
-
-`☉` = read‑only &ensp; `✎` = read/write &ensp; `⚒` = full access (incl. terminal)
+| Deity          | Role             | Purpose                                                                                                                                                                           |
+| -------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Vulcan**     | Developer        | God of fire and the forge. Built his kingdom under Mount Etna and forged Jupiter's thunderbolts. Picks a story, implements end-to-end, never leaves the forge broken.             |
+| **Nemesis**    | QA               | Goddess of retribution against hubris. Punishes those who claim they are finished when they are not. Takes "done" and tries to falsify it — every defect earns a regression test. |
+| **Aquarius**   | Data Engineer    | The water-bearer, Ganymede, cup-bearer to Olympus. Data is water — must flow, be pure, never stagnate. Owns schemas, migrations, queries, and data integrity.                     |
+| **Mars Ultor** | Security         | Mars the Avenger — the aspect that defends Rome. Produces STRIDE threat models, scans CVEs, audits secrets and auth flows. No critical or high risks ship.                        |
+| **Mercury**    | Release Engineer | Messenger of the gods, fastest of them all, winged sandals. Delivers — conventional commits, changelogs, semver tags, npm publish. One concern per commit.                        |
+| **Apollo**     | Documentation    | God of knowledge, truth, and clarity. His oracle spoke in riddles, but he demands precision. Every example must run. Every API doc matches real symbols.                          |
 
 ## Autonomous Pipeline
 
@@ -282,3 +243,7 @@ pi install ~/path/to/pi-gods
 
 No dependencies beyond what pi provides (`@mariozechner/pi-coding-agent`,
 `typebox`, Node.js built-ins).
+
+## License
+
+pi-gods is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

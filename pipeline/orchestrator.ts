@@ -5,7 +5,7 @@
  * the next deity, and manages the handoff queue.
  */
 
-import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
+import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { HandoffEntry, PantheonState } from "../types.js";
 import { STATE_ENTRY_TYPE } from "../types.js";
 import { getDeity, listDeities } from "../pantheon/definitions.js";

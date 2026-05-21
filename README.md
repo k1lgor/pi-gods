@@ -66,7 +66,29 @@ Everything else runs autonomously.
 
 ## How Handoffs Work
 
-Deities create a handoff marker using the standard `write` tool:
+Handoffs happen automatically — no manual routing needed for the happy path.
+
+### Tool-based handoff (recommended)
+
+Use the `pantheon_handoff` tool (available to all deities):
+
+```
+pantheon_handoff({
+  to: "vulcan",
+  reason: "Story implemented — ready for QA",
+  context: "Everything the next deity needs to know..."
+})
+```
+
+The tool sets a handoff flag and returns `terminate: true`, ending the
+current turn immediately — Janus stops without generating a response.
+The `agent_end` hook switches to the target deity and defers the handoff
+message with `setTimeout(0)`. By the time it fires, the agent is fully idle
+and the next turn starts immediately — no user input needed.
+
+### File-based handoff (alternative)
+
+Deities can also create a handoff marker using the standard `write` tool:
 
 ```json
 // .pantheon/handoff.json
@@ -79,8 +101,7 @@ Deities create a handoff marker using the standard `write` tool:
 ```
 
 The `agent_end` hook detects the file, parses it, auto-switches the active
-deity, clears the file, and triggers the next turn with the new deity's
-system prompt injected. No custom pi tools needed — `write` and `bash`
+deity, and clears the file. No custom pi tools needed — `write` and `bash`
 are always available.
 
 **All deities can create handoff files** regardless of their tool policy.
@@ -142,6 +163,13 @@ Every deity has programmatic boundaries enforced at the `tool_call` hook:
 | `/gods <name>` | Switch to a deity (e.g., `/gods vulcan`)             |
 | `/gods status` | Show current deity, pending handoffs, gate checklist |
 | `/gods next`   | Janus inspects project and recommends next deity     |
+
+## Tools
+
+| Tool               | Description                                                                                                                                       |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pantheon_status`  | Display active deity, tool policy, pending handoffs, and routing info                                                                             |
+| `pantheon_handoff` | Hand off to another deity. Accepts `to`, `reason`, and `context` parameters. The handoff takes effect immediately — no waiting for the next turn. |
 
 ## Extension File Structure
 
@@ -241,7 +269,7 @@ git clone https://github.com/k1lgor/pi-gods.git
 pi install ~/path/to/pi-gods
 ```
 
-No dependencies beyond what pi provides (`@mariozechner/pi-coding-agent`,
+No dependencies beyond what pi provides (`@earendil-works/pi-coding-agent`,
 `typebox`, Node.js built-ins).
 
 ## License

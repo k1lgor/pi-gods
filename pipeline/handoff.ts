@@ -12,7 +12,7 @@
  *   3. No dependency on custom tool registration quirks
  */
 
-import { mkdir, readFile, unlink } from "node:fs/promises";
+import { readFile, unlink } from "node:fs/promises";
 import { join } from "node:path";
 import type { HandoffEntry } from "../types.js";
 
@@ -59,13 +59,27 @@ export async function detectHandoffFile(
 ): Promise<HandoffFile | null> {
   const filePath = join(cwd, HANDOFF_DIR, HANDOFF_FILE);
 
+  // Separate file-read failure (normal: no file) from parse failure (error: malformed file)
+  let raw: string;
   try {
-    const raw = await readFile(filePath, "utf-8");
-    const data = JSON.parse(raw);
-    return parseHandoffFile(data);
+    raw = await readFile(filePath, "utf-8");
   } catch {
+    // File doesn't exist or can't be read — normal case, nothing to clean up
     return null;
   }
+
+  // File exists — try to parse
+  try {
+    const data = JSON.parse(raw);
+    const handoff = parseHandoffFile(data);
+    if (handoff) return handoff;
+  } catch {
+    // JSON syntax error
+  }
+
+  // File exists but is invalid — remove it so it doesn't permanently block handoffs
+  await unlink(filePath).catch(() => {});
+  return null;
 }
 
 /**
@@ -109,7 +123,18 @@ export function handoffInstructions(targetDeityHint?: string): string {
 
 When your work for this phase is complete and you have verified ALL items in the HANDOFF GATE above:
 
-1. Create the file \`.pantheon/handoff.json\` using the \`write\` tool with this exact structure:
+### Primary: Use the \`pantheon_handoff\` tool
+
+Call the **\`pantheon_handoff\`** tool with:
+- \`to\`: "${target}"
+- \`reason\`: One sentence explaining why the handoff is needed
+- \`context\`: Everything the next deity needs to know — decisions made, files created, remaining questions
+
+The system will automatically switch to ${target} on the next turn.
+
+### Fallback: Create a handoff file
+
+Alternatively, create the file \`.pantheon/handoff.json\` using the \`write\` tool with this exact structure:
 
 \`\`\`json
 {
@@ -120,11 +145,11 @@ When your work for this phase is complete and you have verified ALL items in the
 }
 \`\`\`
 
-2. The system will detect this file automatically and switch to ${target} on the next turn.
+The system will detect this file automatically and switch to ${target} on the next turn.
 
-3. **If you omit \`to\`, it defaults to Janus (Orchestrator).** This is useful when your task is complete and you want the pipeline to reset for the next request.
+**If you omit \`to\`, it defaults to Janus (Orchestrator).** This is useful when your task is complete and you want the pipeline to reset for the next request.
 
-4. **IMPORTANT:** If you need user input or have a clarifying question, do NOT create this file. Just ask the user directly. The pipeline pauses until they respond — then you continue and handoff when ready.
+**IMPORTANT:** If you need user input or have a clarifying question, do NOT handoff yet. Just ask the user directly. The pipeline pauses until they respond — then you continue and handoff when ready.
 
-5. The \`.pantheon/\` directory is created automatically — just write the file.`;
+The \`.pantheon/\` directory is created automatically — just write the file.`;
 }

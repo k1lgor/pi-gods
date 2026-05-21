@@ -4,3 +4,6 @@ dist/
 .pantheon/*
 .pi/*
 TODO.md
+.oh-my-pi/*
+demo-project/
+tsconfig.json

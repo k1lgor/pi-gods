@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.3.0] — 2026-05-21
+
+### Added
+
+- **`autoHandoffRequested` flag** — new field in `PantheonState` for reliable in-memory handoff tracking
+- **`isPantheonTool` guard** — `pantheon_status` and `pantheon_handoff` tools always allowed regardless of deity policy
+- **Demo project** — calculator CLI (`demo-project/src/`) and todo app with API-key auth
+
+### Fixed
+
+- **Auto-handoff now triggers immediately** — `pi.sendUserMessage` deferred with `setTimeout(0)` so the next turn starts without waiting for user input
+- **State sync across module imports** — `state.ts` now mutates in-place via `Object.assign` instead of reassigning the module-level variable, avoiding stale references
+- **Handoff tool ends Janus's turn** — `pantheon_handoff` returns `terminate: true`, preventing Janus from generating follow-up text
+- **Handoff file error handling** — `detectHandoffFile` separates file-not-found from malformed-JSON, cleans up corrupt files
+- **PATCH `completed` validation** — `Store.updateTodo` now rejects non-boolean `completed` values with `TypeError`
+
+### Changed
+
+- **Package renamed** — import path `@mariozechner/pi-coding-agent` → `@earendil-works/pi-coding-agent`
+- **Pipeline speed** — auto-handoffs flow through the full deity chain without user intervention
+- **README handoff docs** — updated to describe `setTimeout(0)` immediate turn trigger
+
 ## [0.2.2] — 2026-05-08
 
 ### Added

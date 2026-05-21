@@ -148,7 +148,7 @@ Produce exactly: NEXT: one-line action | WHY: one-line reason | HOW: exact comma
       "packages/",
     ],
     handoffs: [
-      { to: "prometheus", when: "PRD is complete and the user approves" },
+      { to: "prometheus", when: "PRD is complete and ready for architecture" },
     ],
     voice: [
       "Every answer begins with a question. You do not propose solutions until you understand the problem.",
@@ -214,9 +214,12 @@ Architecture, Tech Stack, Tasks, Implementation Notes, Test Strategy, QA Notes, 
     handoffs: [
       {
         to: "morpheus",
-        when: "architecture approved and the project has a UI",
+        when: "architecture is documented and the project has a UI",
       },
-      { to: "plutus", when: "architecture approved and the project has no UI" },
+      {
+        to: "plutus",
+        when: "architecture is documented and the project has no UI",
+      },
       {
         to: "mars",
         when: "architecture locked and needs a threat model before implementation",
@@ -286,7 +289,7 @@ Problem, Users, Goals, Non-Goals, Tasks, Implementation Notes, Test Strategy, QA
       "src/",
     ],
     handoffs: [
-      { to: "plutus", when: "UX spec approved and ready for backlog" },
+      { to: "plutus", when: "UX spec is complete and ready for backlog" },
     ],
     voice: [
       "Lead every spec with the user goal, then the flow, then the screen — never the other way around.",
@@ -351,7 +354,10 @@ Architecture, Tech Stack, Tasks, Implementation Notes, Test Strategy, QA Notes, 
       "src/",
     ],
     handoffs: [
-      { to: "calliope", when: "epics agreed and ready for story breakdown" },
+      {
+        to: "calliope",
+        when: "epics are defined and ready for story breakdown",
+      },
       {
         to: "vesta",
         when: "backlog needs process and health checks before story writing",

@@ -8,7 +8,7 @@
  * Install:   ~/.pi/agent/extensions/pi-gods/
  */
 
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import {
   getDeity,
   listDeities,
@@ -27,6 +27,7 @@ import {
   formatStatus,
 } from "./pipeline/index.js";
 import { buildSystemPrompt } from "./system-prompt.js";
+import { Type } from "typebox";
 import {
   initState,
   state,
@@ -95,6 +96,11 @@ export default function (pi: ExtensionAPI) {
         return;
       }
 
+      // Sanitize: the real sender is always the current active deity
+      if (handoffFile.from !== state.activeDeity) {
+        handoffFile.from = state.activeDeity;
+      }
+
       // Create handoff entry
       const entry = handoffFileToEntry(handoffFile);
       const newState = addHandoff(state, entry);
@@ -113,9 +119,12 @@ export default function (pi: ExtensionAPI) {
       }
 
       // Kick off the next deity
-      pi.sendUserMessage(
-        `Handoff from **${handoffFile.from}**: ${handoffFile.reason}\n\nContext for ${toDeity.name}: ${handoffFile.context}\n\nYou are now **${toDeity.name}**, the ${toDeity.title}.`,
-      );
+      // Defer to after agent_end so the agent is truly idle and this triggers a new turn immediately
+      setTimeout(() => {
+        pi.sendUserMessage(
+          `Handoff from **${handoffFile.from}**: ${handoffFile.reason}\n\nContext for ${toDeity.name}: ${handoffFile.context}\n\nYou are now **${toDeity.name}**, the ${toDeity.title}.`,
+        );
+      }, 0);
       return;
     }
 
@@ -141,9 +150,12 @@ export default function (pi: ExtensionAPI) {
       ctx.ui.setStatus("pantheon", `${toDeity.name} [${toDeity.toolPolicy}]`);
     }
 
-    pi.sendUserMessage(
-      `Handoff from **${handoff.from}**: ${handoff.reason}\n\nContext: ${handoff.context}\n\nYou are now **${toDeity.name}**, the ${toDeity.title}.`,
-    );
+    // Defer to after agent_end so the agent is truly idle and this triggers a new turn immediately
+    setTimeout(() => {
+      pi.sendUserMessage(
+        `Handoff from **${handoff.from}**: ${handoff.reason}\n\nContext: ${handoff.context}\n\nYou are now **${toDeity.name}**, the ${toDeity.title}.`,
+      );
+    }, 0);
   });
 
   // ── Command: /gods ──────────────────────────────────────────────────
@@ -213,9 +225,11 @@ export default function (pi: ExtensionAPI) {
         updateState({ activeDeity: "janus", activationFired: false });
         ctx.ui?.notify?.("Routing through Janus...", "info");
         ctx.ui?.setStatus?.("pantheon", "janus [readonly]");
-        pi.sendUserMessage(
-          `You are Janus, the Orchestrator. Previous deity: ${prev}. Inspect the project and recommend: NEXT: <action> | WHY: <reason> | HOW: /gods <name>`,
-        );
+        setTimeout(() => {
+          pi.sendUserMessage(
+            `You are Janus, the Orchestrator. Previous deity: ${prev}. Inspect the project and recommend: NEXT: <action> | WHY: <reason> | HOW: /gods <name>`,
+          );
+        }, 0);
         return;
       }
 
@@ -245,7 +259,106 @@ export default function (pi: ExtensionAPI) {
         setState(accepted);
       }
 
-      pi.sendUserMessage(`You are now **${deity.name}**, the ${deity.title}.`);
+      setTimeout(() => {
+        pi.sendUserMessage(
+          `You are now **${deity.name}**, the ${deity.title}.`,
+        );
+      }, 0);
+    },
+  });
+
+  // ── Tools: pantheon_status ──────────────────────────────────────────────
+
+  pi.registerTool({
+    name: "pantheon_status",
+    label: "Pantheon Status",
+    description:
+      "Display the current Pantheon status — active deity, tool policy, pending handoffs, and routing info",
+    parameters: Type.Object({}),
+    executionMode: "foreground",
+    execute: async (_toolCallId, _params, _signal, _onUpdate, ctx) => {
+      const d = getDeity(state.activeDeity);
+      if (!d) return { content: [{ type: "text", text: "No active deity." }] };
+      const pending = pendingHandoffs(state).length;
+      const next =
+        d.handoffs.length > 0 ? d.handoffs.map((h) => h.to).join(", ") : "none";
+      const lines = [
+        `Active: ${d.name} (${d.title})`,
+        `Access: ${d.toolPolicy}`,
+        `Pending handoffs: ${pending}`,
+        `Next: ${next}`,
+        `Domain: ${d.domain}`,
+      ];
+      return { content: [{ type: "text", text: lines.join("\n") }] };
+    },
+  });
+
+  // ── Tools: pantheon_handoff ─────────────────────────────────────────────
+
+  pi.registerTool({
+    name: "pantheon_handoff",
+    label: "Pantheon Handoff",
+    description:
+      "Hand off to another deity. Creates a handoff entry and automatically switches to the target deity on the next turn.",
+    parameters: Type.Object({
+      to: Type.String({
+        description: "Target deity name to hand off to",
+      }),
+      reason: Type.String({
+        description: "Why the handoff is needed (one sentence)",
+      }),
+      context: Type.String({
+        description:
+          "Context for the next deity — decisions made, files created, remaining questions",
+      }),
+    }),
+    executionMode: "foreground",
+    execute: async (_toolCallId, params, _signal, _onUpdate, ctx) => {
+      const toDeity = getDeity(params.to);
+      if (!toDeity) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Unknown deity: "${params.to}". Use /gods to list available deities.`,
+            },
+          ],
+        };
+      }
+      if (toDeity.name === state.activeDeity) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Already acting as ${toDeity.name}. No handoff needed.`,
+            },
+          ],
+        };
+      }
+      const fromName = getDeity(state.activeDeity)?.name ?? state.activeDeity;
+      const entry = createHandoff(
+        fromName,
+        toDeity.name,
+        params.reason,
+        params.context,
+      );
+      const newState = addHandoff(state, entry);
+      setState({ ...newState, autoHandoffRequested: true });
+      if (ctx.hasUI) {
+        ctx.ui.notify(
+          `Handoff queued: ${fromName} → ${toDeity.name} (${toDeity.title})`,
+          "info",
+        );
+      }
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Handoff queued from ${fromName} to ${toDeity.name} (${toDeity.title}).\n\nReason: ${params.reason}\nContext: ${params.context}`,
+          },
+        ],
+        terminate: true,
+      };
     },
   });
 }

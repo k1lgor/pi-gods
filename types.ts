@@ -65,22 +65,20 @@ export interface PantheonState {
   activeDeity: string;
   handoffs: HandoffEntry[];
   activationFired: boolean; // whether activation message was sent this session
+  autoHandoffRequested: boolean; // whether pantheon_handoff tool was called this turn
 }
 
 export const DEFAULT_STATE: PantheonState = {
   activeDeity: "janus",
   handoffs: [],
   activationFired: false,
+  autoHandoffRequested: false,
 };
 
 export const STATE_ENTRY_TYPE = "pantheon-state";
 
 // ── Read-only tools (always safe) ────────────────────────────────────────
-export const READONLY_TOOLS = new Set([
-  "read",
-  "pantheon_status",
-  "pantheon_handoff",
-]);
+export const READONLY_TOOLS = new Set(["read"]);
 
 // ── Write tools ──────────────────────────────────────────────────────────
 export const WRITE_TOOLS = new Set(["write", "edit"]);

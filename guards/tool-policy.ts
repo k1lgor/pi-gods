@@ -25,6 +25,11 @@ export function checkToolAccess(
     return { blocked: false };
   }
 
+  // 0a. ALWAYS allow pantheon pipeline tools (pipeline operations, not domain-specific)
+  if (isPantheonTool(toolName)) {
+    return { blocked: false };
+  }
+
   // 1. Destructive patterns (applies to ALL deities)
   const destructiveCheck = checkDestructivePatterns(toolName, toolInput);
   if (destructiveCheck.blocked) return destructiveCheck;
@@ -142,14 +147,26 @@ function isHandoffFileOp(
   // write/edit to .pantheon/handoff.json
   if (toolName === "write" || toolName === "edit") {
     const path = String(input.path ?? "");
-    if (path.includes(".pantheon/handoff.json")) return true;
+    // Must be .pantheon/handoff.json as an exact path segment, not a substring
+    if (/(?:^|[\/\\])\.pantheon[\/\\]handoff\.json$/.test(path)) {
+      return true;
+    }
   }
   // bash writing to .pantheon/handoff.json (echo/cat > .pantheon/...)
   if (toolName === "bash") {
     const cmd = String(input.command ?? "");
-    if (cmd.includes(".pantheon/handoff.json")) return true;
+    // Match .pantheon/handoff.json as a distinct path token, not a longer identifier
+    if (/\b\.pantheon[\/\\]handoff\.json\b/.test(cmd)) return true;
   }
   return false;
+}
+
+/**
+ * Allow pantheon pipeline tools regardless of deity policy.
+ * These manage the pipeline itself, not project artifacts.
+ */
+function isPantheonTool(toolName: string): boolean {
+  return toolName === "pantheon_status" || toolName === "pantheon_handoff";
 }
 
 // ── System Prompt: Tool Access ───────────────────────────────────────────
@@ -231,10 +248,12 @@ export function describeHandoffGate(deity: DeityDefinition): string {
   if (deity.handoffs.length > 0) {
     const targets = [...new Set(deity.handoffs.map((h) => h.to))].join(" or ");
     lines.push(
-      `All checked? Write \`.pantheon/handoff.json\` with to: \"${targets}\"`,
+      `All checked? Call **\`pantheon_handoff\`** with to: \"${targets}\", or write \`.pantheon/handoff.json\``,
     );
   }
-  lines.push("If unsure or task is complete, omit `to` — it defaults to Janus.");
+  lines.push(
+    "If unsure or task is complete, omit `to` — it defaults to Janus.",
+  );
 
   return lines.join("\n");
 }
